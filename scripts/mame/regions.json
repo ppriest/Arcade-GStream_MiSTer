@@ -1,57 +1,85 @@
 {
-  "_comment": "Core-specific. The main CPU's view of the machine, from the MAME driver's address map. Read by mame_capture.py and write_timing.py. Addresses are hex strings, inclusive.",
+  "_comment": "Core-specific. The main CPU's view of the machine, from MAME promat/gstream.cpp gstream_32bit_map (272-287). Read by mame_capture.py, write_timing.py and the E1 trace tools. Addresses are hex strings, inclusive. x2222 and x2222o use x2222_32bit_map (366-383): the base 'x2222'.",
   "cpu": ":maincpu",
   "space": "program",
-  "bus_bytes": 2,
+  "bus_bytes": 4,
   "big_endian": true,
   "read": {
-    "workram": [
-      "0x000000",
-      "0x00ffff"
-    ]
+    "workram": ["0x00000000", "0x003fffff"],
+    "vram": ["0x80000000", "0x80003fff"],
+    "palette": ["0x4f400000", "0x4f406fff"],
+    "nvram": ["0xffc00000", "0xffc01fff"]
   },
+  "_wtap_comment": "Scroll registers, write-only (scrollx_w/scrolly_w, umask 0xffff0000: the value is bits 31:16). Layer n is drawn from VRAM + n * 0x400 bytes; 2 is drawn first, 0 last.",
   "wtap": {
-    "vregs": [
-      "0x000000",
-      "0x00001f"
-    ]
+    "sx0": ["0x4f800000", "0x4f800003"],
+    "sy0": ["0x4fa00000", "0x4fa00003"],
+    "sx1": ["0x4fc00000", "0x4fc00003"],
+    "sy1": ["0x4fe00000", "0x4fe00003"],
+    "sx2": ["0x4f000000", "0x4f000003"],
+    "sy2": ["0x4f200000", "0x4f200003"]
   },
-  "sweep": [
-    "workram",
-    "vregs"
-  ],
+  "sweep": ["vram_tile", "vram_spr", "palette", "sx0", "sy0", "sx1", "sy1", "sx2", "sy2"],
+  "_sweep_regions_comment": "VRAM interleaves the tilemaps (bits 31:16 of each dword) and the sprite list (bits 15:0); the third value is the byte-lane mask a write must overlap to count (wtiming.lua).",
+  "sweep_regions": {
+    "vram_tile": ["0x80000000", "0x80003fff", "0xffff0000"],
+    "vram_spr": ["0x80000000", "0x80003fff", "0x0000ffff"]
+  },
   "trace": {
-    "addr_hi": "0xffffff",
-    "io": [
-      "0x000000",
-      "0x000000"
-    ],
-    "vectors": [
-      "0x000000",
-      "0x000000"
-    ],
-    "ipl": {
-      "reg": "SR",
-      "shift": 8,
-      "mask": 7
-    },
-    "rom": [
-      [
-        "0x000000",
-        "0x0fffff"
-      ]
-    ],
-    "ram": [
-      [
-        "0x100000",
-        "0x10ffff"
-      ]
-    ]
+    "addr_hi": "0xffffffff",
+    "io": [],
+    "vectors": ["0xffffff00", "0xffffffff"],
+    "rom": [["0xfff80000", "0xffffffff"], ["0x4e000000", "0x4e1fffff"]],
+    "ram": [["0x00000000", "0x003fffff"], ["0x80000000", "0x80003fff"], ["0x4f400000", "0x4f406fff"], ["0xffc00000", "0xffc01fff"]]
+  },
+  "io_space": {
+    "_comment": "AS_IO of the E1-32X: 32-bit data, 13 address bits, the address unit is a dword (e132xs.cpp 163, shift -2); the CPU's I/O address is its effective address >> 13 (e132xs.cpp 1555). gstream_io 354-363.",
+    "name": "io",
+    "hi": "0x1fff"
   },
   "inputs": {
     "coin": "Coin 1",
     "start": "1 Player Start",
     "hold": "P1 Right",
-    "pulse": "P1 Button 1"
+    "pulse": "P1 Button 1",
+    "coin_period": 97,
+    "start_period": 211,
+    "press_len": 5
+  },
+  "bases": {
+    "x2222": {
+      "_comment": "x2222_32bit_map (366-383): no palette RAM (16-bit direct colour), RAM at 0x40000000, scroll registers at 0x4fa00000-0x4ff00000, boot ROM 1 MB from 0xfff00000.",
+      "read": {
+        "workram": ["0x00000000", "0x003fffff"],
+        "xram": ["0x40000000", "0x403fffff"],
+        "vram": ["0x80000000", "0x80003fff"],
+        "nvram": ["0xffc00000", "0xffc01fff"]
+      },
+      "wtap": {
+        "sx0": ["0x4ff00000", "0x4ff00003"],
+        "sy0": ["0x4fe00000", "0x4fe00003"],
+        "sx1": ["0x4fd00000", "0x4fd00003"],
+        "sy1": ["0x4fc00000", "0x4fc00003"],
+        "sx2": ["0x4fb00000", "0x4fb00003"],
+        "sy2": ["0x4fa00000", "0x4fa00003"]
+      },
+      "sweep": ["vram_tile", "vram_spr", "sx0", "sy0", "sx1", "sy1", "sx2", "sy2"],
+      "trace": {
+        "addr_hi": "0xffffffff",
+        "io": [],
+        "vectors": ["0xffffff00", "0xffffffff"],
+        "rom": [["0xfff00000", "0xffffffff"]],
+        "ram": [["0x00000000", "0x003fffff"], ["0x40000000", "0x403fffff"], ["0x80000000", "0x80003fff"], ["0xffc00000", "0xffc01fff"]]
+      },
+      "io_space": {
+        "_comment": "x2222_io 392-400.",
+        "name": "io",
+        "hi": "0x1fff"
+      }
+    }
+  },
+  "sets": {
+    "x2222": {"base": "x2222"},
+    "x2222o": {"base": "x2222"}
   }
 }

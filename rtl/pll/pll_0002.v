@@ -7,8 +7,13 @@ module  pll_0002(
 	// interface 'reset'
 	input wire rst,
 
-	// interface 'outclk0'
+	// interface 'outclk0' -- clk_sys, 60.75 MHz: 9 x the 6.75 MHz pixel clock (docs/ROADMAP.md, Clocks)
 	output wire outclk_0,
+
+	// interface 'outclk1' -- SDRAM_CLK, the same 60.75 MHz lagging by 14403 ps, T - 2.06 ns: Arcade-Vamphalf_MiSTer's
+	// T - 2 ns (rtl/pll/pll_0002.v there, measured on two boards at 56 MHz), on this clock's phase step (102.88 ps with
+	// the 1215 MHz VCO, 205.76 ps with 607.5 MHz: 140 or 70 steps). Not yet measured at 60.75 MHz.
+	output wire outclk_1,
 
 	// interface 'locked'
 	output wire locked
@@ -18,12 +23,12 @@ module  pll_0002(
 		.fractional_vco_multiplier("false"),
 		.reference_clock_frequency("50.0 MHz"),
 		.operation_mode("direct"),
-		.number_of_clocks(1),
-		.output_clock_frequency0("20.000000 MHz"),
+		.number_of_clocks(2),
+		.output_clock_frequency0("60.750000 MHz"),
 		.phase_shift0("0 ps"),
 		.duty_cycle0(50),
-		.output_clock_frequency1("0 MHz"),
-		.phase_shift1("0 ps"),
+		.output_clock_frequency1("60.750000 MHz"),
+		.phase_shift1("14403 ps"),
 		.duty_cycle1(50),
 		.output_clock_frequency2("0 MHz"),
 		.phase_shift2("0 ps"),
@@ -77,7 +82,7 @@ module  pll_0002(
 		.pll_subtype("General")
 	) altera_pll_i (
 		.rst	(rst),
-		.outclk	({outclk_0}),
+		.outclk	({outclk_1, outclk_0}),
 		.locked	(locked),
 		.fboutclk	( ),
 		.fbclk	(1'b0),

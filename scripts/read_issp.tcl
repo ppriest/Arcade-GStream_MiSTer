@@ -17,9 +17,38 @@
 # (signed 16), hex or bit. Bit numbers index the probe bus as the RTL
 # concatenates it. Add an entry to the `switch` further down for each table.
 # By convention source bit 0 pulsed is the counter clear.
+# GStream.sv: instance F (state) and P (whether the CPU keeps up); keep in step with the probe buses there.
 set fields_F {
-    {frames           0  15 dec}
+    {instructions     0  31 dec}
+    {last_pc         32  63 hex}
+    {dmiss           64  79 dec}
+    {imiss           80  95 dec}
+    {video_overrun   96 111 dec}
+    {frames_mod256  112 119 dec}
+    {rom_loaded     120 120 bit}
+    {core_reset     121 121 bit}
+    {et_busy        122 122 bit}
+    {ioctl_download 123 123 bit}
+    {ldr_done       124 124 bit}
+    {ldr_active     125 125 bit}
+    {x2             126 126 bit}
     {pll_locked     127 127 bit}
+}
+set fields_S {
+    {late_adpcm_1     0  15 dec}
+    {late_adpcm_2    16  31 dec}
+    {max_wait_1      32  43 dec}
+    {max_wait_2      44  55 dec}
+    {chk_sum         56  87 hex}
+    {chk_busy        88  88 bit}
+}
+set fields_P {
+    {frames           0  15 dec}
+    {lost            16  31 dec}
+    {no_vram_update  32  47 dec}
+    {busy_over_0.9   48  63 dec}
+    {max_busy_clk    64  83 dec}
+    {last_busy_clk   84 103 dec}
 }
 # ---------------------------------------------------------------------------
 
@@ -86,6 +115,8 @@ if {$want ne ""} {
 # than guesses.
 switch -- $inst_id {
     F       { set fields $fields_F }
+    P       { set fields $fields_P }
+    S       { set fields $fields_S }
     default {
         puts "instance id '$inst_id' has no field table -- add one before reading it"
         exit 1

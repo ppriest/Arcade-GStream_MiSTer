@@ -1,0 +1,3 @@
++incdir+rtl
+rtl/memory/gs_et_scan.sv
+sim/et_tb/tb_et.sv

@@ -59,14 +59,22 @@ def mame_paths():
     return mame_dir, exe
 
 
-def regions():
-    return json.loads((LUA_DIR / "regions.json").read_text(encoding="utf-8"))
+def regions(game=None):
+    """regions.json; the keys of "sets"[game], if any, replace the top-level ones, after
+    those of "bases"[the set's "base"] (a set on another memory map)."""
+    r = json.loads((LUA_DIR / "regions.json").read_text(encoding="utf-8"))
+    bases = r.pop("bases", {})
+    s = r.pop("sets", {}).get(game, {})
+    r.update(bases.get(s.get("base"), {}))
+    r.update(s)
+    return r
 
 
 def spec(table, names=None):
-    """{"name": [lo, hi]} -> "name:lo:hi,..." for the Lua side."""
-    return ",".join(f"{n}:{int(lo, 16):x}:{int(hi, 16):x}"
-                    for n, (lo, hi) in table.items() if names is None or n in names)
+    """{"name": [lo, hi]} or [lo, hi, mask] -> "name:lo:hi[:mask],..." for the Lua side. A mask keeps
+    only the accesses whose byte-lane mask overlaps it (wtiming.lua)."""
+    return ",".join(f"{n}:{int(v[0], 16):x}:{int(v[1], 16):x}" + (f":{int(v[2], 16):x}" if len(v) > 2 else "")
+                    for n, v in table.items() if names is None or n in names)
 
 
 def lua_env(r):
@@ -199,7 +207,7 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     seconds = a.seconds if a.seconds is not None else max(10, a.frame // 60 + 10)
 
-    extra = ["-seconds_to_run", str(seconds)]
+    extra = ["-nodrc", "-seconds_to_run", str(seconds)]   # E1: interpreter, as in the traces
     if a.dip:
         extra += ["-cfg_directory", seed_dips(exe, mame_dir, a.set, a.dip, out).as_posix()]
     cmd = mame_cmd(exe, a.set, "capture.lua", mame_dir, extra)

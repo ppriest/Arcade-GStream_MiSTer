@@ -1,0 +1,315 @@
+{
+  "_comment": "Vendored files; scripts/vendor_sync.py checks them. 'copy' files are never edited here; 'track' files are adapted copies whose upstream movement is reported.",
+  "sources": {
+    "vamphalf": {
+      "repo": "Arcade-Vamphalf_MiSTer"
+    },
+    "eolith": {
+      "repo": "Arcade-Eolith_MiSTer"
+    }
+  },
+  "files": [
+    {
+      "path": "rtl/e1/e1_pipe.sv",
+      "source": "vamphalf",
+      "commit": "8f1f21c84a023cb9d26e32d928f8674c5ade0bf8",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/e1/e1_cpu.sv",
+      "source": "vamphalf",
+      "commit": "dbdb9ec68390d8f8f08349b98efd4b3edb28b2b2",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/e1/e1_regram.sv",
+      "source": "vamphalf",
+      "commit": "5bb879e76576bf205007d4cde7d67519f9a6bb07",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/vh_cache.sv",
+      "source": "vamphalf",
+      "commit": "48d85686788d9d1547092f150093725d65d12906",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/memory/sdram.sv",
+      "source": "vamphalf",
+      "commit": "ff38ff1c2da40e64f66c3195f5ba36ce9c6c1c06",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/memory/sdram_upstream_reference.sv",
+      "source": "vamphalf",
+      "commit": "80e4789b837070ffd80dc7d0ed0b433a0fdc2c7d",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/memory/sdram_download.sv",
+      "source": "vamphalf",
+      "commit": "80e4789b837070ffd80dc7d0ed0b433a0fdc2c7d",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/memory/ddram_phy.sv",
+      "source": "vamphalf",
+      "commit": "eaa95dffa66007ebd6af832a7c5961ee54846191",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/memory/vh_dpram.sv",
+      "source": "vamphalf",
+      "commit": "48d85686788d9d1547092f150093725d65d12906",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/memory/vh_rom_loader.sv",
+      "source": "vamphalf",
+      "commit": "eaa95dffa66007ebd6af832a7c5961ee54846191",
+      "mode": "copy"
+    },
+    {
+      "path": "sim/common/sdram_chip_model_wide.sv",
+      "source": "vamphalf",
+      "commit": "68093b2402ff7a7f2fc77a0275fdf98b0f822977",
+      "mode": "copy"
+    },
+    {
+      "path": "sim/common/PROVENANCE.md",
+      "source": "vamphalf",
+      "commit": "68093b2402ff7a7f2fc77a0275fdf98b0f822977",
+      "mode": "copy"
+    },
+    {
+      "path": "sim/e1_tb/main.cpp",
+      "source": "vamphalf",
+      "commit": "cb669953d0dc25e28af09abaaaba23f9fba0b563",
+      "mode": "copy"
+    },
+    {
+      "path": "sim/e1_tb/tb_e1.sv",
+      "source": "vamphalf",
+      "commit": "ddc09b69fef0ea5000cb115eee134e2fc6ff23df",
+      "mode": "copy"
+    },
+    {
+      "path": "sim/e1_tb/e1.vlt",
+      "source": "vamphalf",
+      "commit": "cb669953d0dc25e28af09abaaaba23f9fba0b563",
+      "mode": "copy"
+    },
+    {
+      "path": "sim/e1_tb/verilator.files",
+      "source": "vamphalf",
+      "commit": "ddc09b69fef0ea5000cb115eee134e2fc6ff23df",
+      "mode": "copy"
+    },
+    {
+      "path": "scripts/mame/e1trace.lua",
+      "source": "vamphalf",
+      "commit": "bdcd68fc60fe460f4e76a2546e197f6b8ef71bc7",
+      "mode": "copy"
+    },
+    {
+      "path": "scripts/e1trace_convert.py",
+      "source": "vamphalf",
+      "commit": "bdcd68fc60fe460f4e76a2546e197f6b8ef71bc7",
+      "mode": "copy"
+    },
+    {
+      "path": "scripts/mame_e1_trace.py",
+      "source": "vamphalf",
+      "commit": "bdcd68fc60fe460f4e76a2546e197f6b8ef71bc7",
+      "mode": "copy"
+    },
+    {
+      "path": "docs/E1_TRACE_FORMAT.md",
+      "source": "vamphalf",
+      "commit": "5b69f01042e54ab694922d386248b38f02a495f1",
+      "mode": "copy"
+    },
+    {
+      "path": "scripts/e1_regress.py",
+      "source": "vamphalf",
+      "commit": "ddc09b69fef0ea5000cb115eee134e2fc6ff23df",
+      "mode": "copy"
+    },
+    {
+      "path": "scripts/e1_coverage.py",
+      "source": "vamphalf",
+      "commit": "31d2e79a98f54a497a08b727649833118cd1ff2e",
+      "mode": "copy"
+    },
+    {
+      "path": "scripts/e1_gen_test.py",
+      "source": "vamphalf",
+      "commit": "5c0421c4e993f3c77ce56d248853f35b048d2a2a",
+      "mode": "copy"
+    },
+    {
+      "path": "scripts/trace_compare.py",
+      "source": "vamphalf",
+      "commit": "89bb057fea4792390b192200da781854d624b1ce",
+      "mode": "copy"
+    },
+    {
+      "path": "scripts/e1_trace_tail.py",
+      "source": "vamphalf",
+      "commit": "31d2e79a98f54a497a08b727649833118cd1ff2e",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/sound/jt6295/LICENSE",
+      "source": "vamphalf",
+      "commit": "ec45cfbf05aa8fd938149dabd8f2ad2c7360fde8",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/sound/jt6295/hdl/jt6295.v",
+      "source": "vamphalf",
+      "commit": "ec45cfbf05aa8fd938149dabd8f2ad2c7360fde8",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/sound/jt6295/hdl/jt6295_acc.v",
+      "source": "vamphalf",
+      "commit": "ec45cfbf05aa8fd938149dabd8f2ad2c7360fde8",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/sound/jt6295/hdl/jt6295_adpcm.v",
+      "source": "vamphalf",
+      "commit": "ec45cfbf05aa8fd938149dabd8f2ad2c7360fde8",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/sound/jt6295/hdl/jt6295_ctrl.v",
+      "source": "vamphalf",
+      "commit": "ec45cfbf05aa8fd938149dabd8f2ad2c7360fde8",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/sound/jt6295/hdl/jt6295_rom.v",
+      "source": "vamphalf",
+      "commit": "ec45cfbf05aa8fd938149dabd8f2ad2c7360fde8",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/sound/jt6295/hdl/jt6295_serial.v",
+      "source": "vamphalf",
+      "commit": "ec45cfbf05aa8fd938149dabd8f2ad2c7360fde8",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/sound/jt6295/hdl/jt6295_sh_rst.v",
+      "source": "vamphalf",
+      "commit": "ec45cfbf05aa8fd938149dabd8f2ad2c7360fde8",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/sound/jt6295/hdl/jt6295_timing.v",
+      "source": "vamphalf",
+      "commit": "ec45cfbf05aa8fd938149dabd8f2ad2c7360fde8",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/sound/oki_rom_bridge.sv",
+      "source": "vamphalf",
+      "commit": "ec45cfbf05aa8fd938149dabd8f2ad2c7360fde8",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/sound/sample_cache.sv",
+      "source": "vamphalf",
+      "commit": "ec45cfbf05aa8fd938149dabd8f2ad2c7360fde8",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/debug/issp_probe.sv",
+      "source": "vamphalf",
+      "commit": "1b3dd197d38b7939cc6328d5ad5661d567771200",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/debug/vh_trace.sv",
+      "source": "vamphalf",
+      "commit": "ff38ff1c2da40e64f66c3195f5ba36ce9c6c1c06",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/video/crt_adjust.sv",
+      "source": "vamphalf",
+      "commit": "80e4789b837070ffd80dc7d0ed0b433a0fdc2c7d",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/video/screen_rotate_two.sv",
+      "source": "vamphalf",
+      "commit": "80e4789b837070ffd80dc7d0ed0b433a0fdc2c7d",
+      "mode": "copy"
+    },
+    {
+      "path": "scripts/run_verilator.sh",
+      "source": "vamphalf",
+      "commit": "ddc09b69fef0ea5000cb115eee134e2fc6ff23df",
+      "mode": "track"
+    },
+    {
+      "path": "scripts/mame_capture.py",
+      "source": "vamphalf",
+      "commit": "44e596c45c6a027cfacfb2de899a2b349d93e233",
+      "mode": "track"
+    },
+    {
+      "path": "scripts/write_timing.py",
+      "source": "vamphalf",
+      "commit": "a672226995bbb6df09c2fbed8ccdbca155e2c5ec",
+      "mode": "track"
+    },
+    {
+      "path": "scripts/mame/wtiming.lua",
+      "source": "vamphalf",
+      "commit": "44e596c45c6a027cfacfb2de899a2b349d93e233",
+      "mode": "track"
+    },
+    {
+      "path": "scripts/mame/busy.lua",
+      "source": "vamphalf",
+      "commit": "ae4c559b680b6b45364b6c5b556fda7fb22b9254",
+      "mode": "track"
+    },
+    {
+      "path": "scripts/mame_busy.py",
+      "source": "vamphalf",
+      "commit": "ae4c559b680b6b45364b6c5b556fda7fb22b9254",
+      "mode": "track"
+    },
+    {
+      "path": "scripts/mame/dasm.lua",
+      "source": "vamphalf",
+      "commit": "19e2e5cab50cb84a031db8a949bdc778c763c45d",
+      "mode": "track"
+    },
+    {
+      "path": "scripts/vendor_sync.py",
+      "source": "eolith",
+      "commit": "049b6343b3b04c24b90d8a860199ade01e0f956b",
+      "mode": "copy"
+    },
+    {
+      "path": "rtl/gs_cpumem.sv",
+      "source": "vamphalf",
+      "from": "rtl/vh_cpumem.sv",
+      "commit": "3a9b5321df326358827b8bd6ce9b8d3b070c1f6a",
+      "mode": "track"
+    },
+    {
+      "path": "rtl/video/gs_crt.sv",
+      "source": "vamphalf",
+      "from": "rtl/video/vh_crt.sv",
+      "commit": "c3f325608ea293bb5427786c2060616e921e2e7d",
+      "mode": "track"
+    }
+  ]
+}

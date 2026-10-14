@@ -1,0 +1,35 @@
+`verilator_config
+// main.cpp writes the download image straight into the chip model
+public_flat_rw -module "sdram_chip_model_wide" -var "mem"
+// +bustrace: the CPU's data accesses, compared with MAME's bus trace
+public_flat_rd -module "gs_main" -var "bus_req"
+public_flat_rd -module "gs_main" -var "bus_wr"
+public_flat_rd -module "gs_main" -var "bus_io"
+public_flat_rd -module "gs_main" -var "bus_ack"
+public_flat_rd -module "gs_main" -var "bus_be"
+public_flat_rd -module "gs_main" -var "bus_addr"
+public_flat_rd -module "gs_main" -var "bus_wdata"
+public_flat_rd -module "gs_main" -var "bus_rdata"
+// per frame: the last VRAM and palette writes, and +vramdump
+public_flat_rd -module "tb_sys" -var "spr_we"
+public_flat_rd -module "tb_sys" -var "pal_we"
+public_flat_rd -module "vh_dpram" -var "mem"
+public_flat_rd -module "tb_sys" -var "scrollx0"
+public_flat_rd -module "tb_sys" -var "scrolly0"
+public_flat_rd -module "tb_sys" -var "scrollx1"
+public_flat_rd -module "tb_sys" -var "scrolly1"
+public_flat_rd -module "tb_sys" -var "scrollx2"
+public_flat_rd -module "tb_sys" -var "scrolly2"
+// +okilog: the OKI commands and banks, compared with scripts/mame/okilog.lua's
+public_flat_rd -module "tb_sys" -var "oki_wr"
+public_flat_rd -module "tb_sys" -var "oki_wd"
+public_flat_rd -module "tb_sys" -var "oki_bank1"
+public_flat_rd -module "tb_sys" -var "oki_bank2"
+// the late ADPCM bytes: jt6295_rom takes the byte one cen32 after setting the address, whether it has come or not
+public_flat_rd -module "jt6295_rom" -var "st"
+public_flat_rd -module "jt6295_rom" -var "rom_ok"
+public_flat_rd -module "jt6295_rom" -var "rom_addr"
+// +filtchk: the low-pass's input and output, for scripts/snd_filter.py --check
+public_flat_rd -module "gs_sound" -var "f_div"
+public_flat_rd -module "gs_sound" -var "mixc"
+public_flat_rd -module "gs_sound" -var "f_out"

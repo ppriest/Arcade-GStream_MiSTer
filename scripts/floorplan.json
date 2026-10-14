@@ -1,0 +1,15 @@
+{
+ "groups": [
+  {"name": "Hyperstone E1", "match": "^emu\\|u_main\\|u_cpu", "color": "#e6194b"},
+  {"name": "CPU memory, caches", "match": "^emu\\|u_main\\|u_mem", "color": "#911eb4"},
+  {"name": "Board other", "match": "^emu\\|u_main", "color": "#bfef45"},
+  {"name": "Sound (2 x M6295)", "match": "^emu\\|u_snd", "color": "#ffe119"},
+  {"name": "Video", "match": "^emu\\|u_video", "color": "#3cb44b"},
+  {"name": "DDR3 arbiter", "match": "^emu\\|u_ddr", "color": "#aaffc3"},
+  {"name": "ROM load", "match": "^emu\\|(u_ldr|u_ldr_ddram|u_dl|u_et)", "color": "#f58231"},
+  {"name": "SDRAM", "match": "^emu\\|u_sdram", "color": "#4363d8"},
+  {"name": "CRT Adjust", "match": "^emu\\|u_crt", "color": "#9a6324"},
+  {"name": "Video out", "match": "^emu\\|(arcade_video|video_freak|screen_rotate_two)", "color": "#808000"},
+  {"name": "hps_io", "match": "^emu\\|hps_io", "color": "#2f6f6a"}
+ ]
+}

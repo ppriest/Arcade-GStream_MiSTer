@@ -21,19 +21,6 @@ Rules:
 
 | What | Where | Why it is a hack | What would make it correct | Evidence | Severity |
 |---|---|---|---|---|---|
-| {{ONE_LINE_WHAT}} | `{{FILE}}:{{LINE}}` | {{WHY}} | {{FIX}} | {{EVIDENCE}} | {{SEVERITY}} |
-
-<!-- Examples of the shape, from sibling cores:
-| Sound mailbox is a stub that answers the power-on test | `rtl/gx_snd_stub.sv` | No sound CPU yet; the stub returns the reply the test expects and a heartbeat | Phase 3: the real sound board | The game's RAM check passes with it; nothing else is exercised | visible |
-| Sound-command spin of 800 CPU clocks after a latch write | `rtl/cpu/…_bus.sv:NNN` | Copies MAME's 40 us wait; the real board's mechanism is unknown | A measurement of the latch on hardware | Without it the second byte overwrote the first (commit) | latent |
-| Sound CPU reset held 1,024 clocks | `rtl/….sv:NNN` | MAME's pulse is zero-length; the T80 needs to see it | The measured reset length | A PCB measurement says about one second | latent |
-| Screen timing from one game used for every game | `rtl/video/…crtc.sv` | MAME declares 60 Hz with no comment; the one PCB-verified rate is used for all | Per-game timing from PCB measurement | 0.043% from the verified rate | visible |
--->
-
-## Removed
-
-Entries move here when the hack is gone, with the commit that removed it, so a later reader can
-tell "never had it" from "had it and fixed it". Delete a row once nothing else refers to it.
-
-| What | Removed by | Replaced with |
-|---|---|---|
+| The raster: 6.75 MHz pixels, 432 x 262, visible 320 x 240 from (0, 0), syncs placed by guess | `rtl/video/gs_video.sv`, the counters | MAME has no raster (`set_size(320, 240)`, 60 Hz, no blanking, gstream.cpp 844-847); 432 x 262 is the driver's sprite budget constant (780), 6.75 MHz the 27 MHz crystal / 4. The frame is 59.64 Hz against MAME's 60.00 | A PCB measurement or recording of the line and frame rate and the blanking | unverified | visible |
+| The E1 runs on every `clk_sys` clock, not at its 64 MHz | `rtl/gs_main.sv`, `u_cpu` | `e1_pipe` is not cycle-exact to the E1 at any clock; at 60.75 MHz it executes about 2.4 clocks an instruction (play, graphics off the SDRAM) where MAME charges about 1.3 cycles of 64 MHz, so a frame of work takes longer than on MAME and a frame the core cannot finish is a frame of slowdown the original may not have had. Its timer runs at 64 MHz (`cpu_tick`, `cpu_tick2`) | A faster E1 | boot: 2.68 clk/instruction (`sim/sys_tb`, `2e9942e`); play: 2.44 (ROADMAP, Progress, criterion 3) | visible |
+| The sound output's low-pass: 4th-order Butterworth at 3.5 kHz, two biquads at 47,986 Hz | `rtl/sound/gs_sound.sv`, `f_*`; `scripts/snd_filter.py` | The board's analog stage after the AD-65s is not known; the filter is chosen so the spectrum matches MAME's, whose resampler removes the images of the chips' held 7.6 kHz samples | A recording or the schematic of the board's audio stage | `sim/sys_tb +wav`, frames 1200-1500: energy at 3.8-8 kHz 0.17% unfiltered, 0.016% filtered, MAME 0.024%; the user: unfiltered is brighter and noisier than MAME | visible |

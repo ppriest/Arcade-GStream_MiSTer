@@ -53,8 +53,6 @@ Steps for a release:
    shows this build's date and the right MRA count. Files in `unsupported/` and `_dev/` are not
    published, so keep work in progress there.
 
-**Current state:** <one line: what the latest build passes or fails, with the number>.
-
 ## Submitting the core upstream
 
 From the contribution guidelines (https://github.com/MiSTer-devel/Wiki_MiSTer/wiki/Contributing-a-Core-to-MiSTer-FPGA); check each before asking for a release.

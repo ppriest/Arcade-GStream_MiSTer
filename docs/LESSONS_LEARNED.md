@@ -1192,6 +1192,16 @@ ack address that is also an input port must acknowledge on writes only.
 - **[GX] MAME's `nvram/<set>/eeprom` for a 16-bit serial EEPROM is little-endian words.** MAME's
   memory dumped as it is on x86. A bench loading it big-endian ran identically to MAME for 700
   frames until the game's first settings read.
+- **[GStream] `screen:pixels()` in a frame notifier returns the picture drawn from the previous
+  notifier's RAM.** A capture that dumps VRAM, palette and registers at notifier N and reads
+  `pixels()` there pairs state N with picture N-1. Static attract screens hide it (state N-1 equals
+  state N): a software model matched MAME on 3 of 3 attract frames and on 0 of 6 play frames, by
+  45,000-61,000 pixels each. Frame 1500's pixels equal the model of frame 1499's RAM, 0 of 76,800
+  differ; the capture now reads the picture at notifier N+1 (`scripts/mame/gscap.lua`) and the model
+  matches 9 of 9. Capture a moving scene before trusting a capture's pairing.
+- **[GStream] MAME's `nvram` image of a 32-bit RAM share is its dwords in host order.** gstream's
+  `gstream.nv` begins `01 00 00 00` for a CPU dword of 1. Loading it into the CPU's big-endian
+  byte order reverses each dword.
 
 ## Hardware bring-up (MiSTer / DE10-nano)
 

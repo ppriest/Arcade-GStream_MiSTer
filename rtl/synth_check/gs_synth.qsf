@@ -1,0 +1,30 @@
+set_global_assignment -name FAMILY "Cyclone V"
+set_global_assignment -name DEVICE 5CSEBA6U23I7
+set_global_assignment -name TOP_LEVEL_ENTITY gs_synth_top
+set_global_assignment -name SEARCH_PATH ..
+set_global_assignment -name SYSTEMVERILOG_FILE ../e1/e1_pipe.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../e1/e1_regram.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../vh_cache.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../gs_cpumem.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../memory/vh_dpram.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../debug/vh_trace.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../gs_main.sv
+set_global_assignment -name SYSTEMVERILOG_FILE gs_synth_top.sv
+set_global_assignment -name SDC_FILE gs_synth.sdc
+set_global_assignment -name OPTIMIZATION_MODE "HIGH PERFORMANCE EFFORT"
+set_global_assignment -name NUM_PARALLEL_PROCESSORS 4
+set_instance_assignment -name VIRTUAL_PIN ON -to prst
+set_instance_assignment -name VIRTUAL_PIN ON -to rst
+set_instance_assignment -name VIRTUAL_PIN ON -to x2
+set_instance_assignment -name VIRTUAL_PIN ON -to pause
+set_instance_assignment -name VIRTUAL_PIN ON -to cpu_tick*
+set_instance_assignment -name VIRTUAL_PIN ON -to vblank_irq
+set_instance_assignment -name VIRTUAL_PIN ON -to in*
+set_instance_assignment -name VIRTUAL_PIN ON -to x_*
+set_instance_assignment -name VIRTUAL_PIN ON -to spr_*
+set_instance_assignment -name VIRTUAL_PIN ON -to pal_*
+set_instance_assignment -name VIRTUAL_PIN ON -to scroll*
+set_instance_assignment -name VIRTUAL_PIN ON -to oki_*
+set_instance_assignment -name VIRTUAL_PIN ON -to nv_*
+set_instance_assignment -name VIRTUAL_PIN ON -to dl_*
+set_instance_assignment -name VIRTUAL_PIN ON -to mem_*

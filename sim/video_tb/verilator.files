@@ -1,0 +1,4 @@
++incdir+rtl
+rtl/memory/vh_dpram.sv
+rtl/video/gs_video.sv
+sim/video_tb/tb_video.sv
