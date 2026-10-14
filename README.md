@@ -33,6 +33,9 @@ Quartus Prime 17.0.2 Lite for the DE10-nano.
   * Initial release: G-Stream G2020
   * The Hyperstone E1 from Arcade-Vamphalf_MiSTer at 60.75 MHz; graphics read from DDR3
   * Two OKI M6295s with a 3.5 kHz output low-pass (OSD Audio Filter)
+  * **Note: Yes, the sound PCB audio really is that bad**
+    * See https://www.youtube.com/watch?v=9NVsuiw3IYU (PCB recording)
+    * See https://shmups.system11.org/viewtopic.php?t=42678
   * Fast ROM loading, the backup RAM saved to the `.nvm`, CRT Adjust, flip screen, HDMI rotation
 
 ## Games
