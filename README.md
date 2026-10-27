@@ -3,8 +3,6 @@
 A MiSTer FPGA core for Oriental Soft's Hyperstone E1-32XT arcade board (MAME's `promat/gstream.cpp`), built with
 Quartus Prime 17.0.2 Lite for the DE10-nano.
 
-**Status: G-Stream G2020 plays on the board with sound. The X2222 sets are not in yet.**
-
 ## Contents
 
 - [History](#history)
@@ -18,7 +16,6 @@ Quartus Prime 17.0.2 Lite for the DE10-nano.
 - [Installation](#installation)
 - [Controls](#controls)
 - [Status](#status)
-  - [Features](#features)
   - [Todo](#todo)
   - [Resource usage](#resource-usage)
 - [AI Attestation](#ai-attestation)
@@ -126,25 +123,6 @@ Known issues:
 `docs/MAME_KLUDGES.md` lists what is taken from MAME as behaviour and what is known not to be right. `docs/HACKS.md`
 lists this core's own approximations. `docs/ROADMAP.md` is the plan and its progress; `docs/LESSONS_LEARNED.md` is
 what it cost.
-
-### Features
-
-* DIP switches from the `.mra`: n/a, the game has none
-* Inputs: two players, four buttons, coin, start, service coin, Service Mode
-* CRT Adjust (H-Position, V-Shift, H-Size): done, not checked on the board
-* HDMI scaling (integer scale): done
-* HDMI rotation (orientation): done, not checked on the board
-* Flip screen, HDMI and analog, from the OSD (the game has no flip): done, checked in simulation
-* HDMI-only options hidden under direct video: not yet
-* Peripheral menus, rotary joysticks, light guns: n/a
-* Audio mix: n/a, mono
-* Hiscore saving: no `hiscore.dat` entry for this driver; the game's 8 KB backup RAM is saved to the `.nvm` (whether it holds the scores is not checked)
-* NVRAM saved to the `.nvm` file: done, not checked on the board
-* Fast ROM loading via DDR: done
-* Pause (with CPU suspended): done, not checked on the board
-* Sound: two M6295s, OSD Audio Filter On (default) / Off
-* Savestates: not yet
-* Cheats: not yet
 
 ### Todo
 
