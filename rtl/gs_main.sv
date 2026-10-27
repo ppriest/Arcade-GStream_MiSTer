@@ -1,22 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// The main board (gstream.cpp): E1-32XT CPU, its memory system (gs_cpumem), the backup RAM, the scroll
-// registers and the I/O maps of both boards.
+// The board (MAME promat/gstream.cpp): E1-32XT, memory unit (gs_cpumem), backup RAM, scroll registers
+// and the I/O maps of both boards.
 //
-// I/O space (the port is the CPU's I/O address >> 13, e132xs.cpp 1555; the E1-32X's 13-bit I/O space counts
-// dwords, so 0x1000 and 0x1001 are two ports). Unmapped ports read 0.
-//   gstream (gstream_io 354-363), 32-bit reads with bits 31:16 zero (MAME's ports, measured):
-//     0x1000 R IN0   0x1004 R IN1 (bit 15 is IN0's)   0x1008 R IN2 (IN0/IN1's coin, start and test bits)
-//     0x100c W the OKI banks (gstream_oki_banking_w 339-340)    0x1010 W dropped
-//     0x1014 RW OKI 1, bits 7:0                                 0x1018 RW OKI 2, bits 7:0
-//   X2222 (x2222_io 392-400): 0x1000 R P1, 0x1001 R P2, 0x1002 R SYS, 0x1004 R DSW, 0x100d R IN4 (bit 7 toggles
-//     on every read, x2222_toggle_r), 0x100a W dropped (x2222_sound_w); 8-bit ports in bits 7:0
-// Scroll registers (scrollx_w / scrolly_w: the value is bits 31:16, written whole when either upper lane is):
-//   gstream 0x4f0/0x4f2 layer 2 x/y, 0x4f8/0x4fa layer 0, 0x4fc/0x4fe layer 1 (gstream_32bit_map 278-284)
-//   X2222   0x4ff/0x4fe layer 0 x/y, 0x4fd/0x4fc layer 1, 0x4fb/0x4fa layer 2 (x2222_32bit_map 372-379)
-// The backup RAM at 0xffc00000 (8 KB): gstream's battery-backed NVRAM (default gstream.nv), X2222's plain RAM.
-//
-// The vertical blank interrupt is INT1: MAME's irq0_line_hold asserts input line 0 (INPUT_INT1), held until the
-// CPU takes it.
+// I/O space: the port is the CPU I/O address >> 13 (e132xs.cpp 1555); the 13-bit space counts dwords.
+//   gstream (gstream_io 354): 0x1000 R IN0, 0x1004 R IN1 (bit 15 from IN0), 0x1008 R IN2 (coin/start/test),
+//     0x100c W OKI banks, 0x1010 W dropped, 0x1014/0x1018 RW OKI 1/2 (bits 7:0).
+//   X2222 (x2222_io 392): 0x1000 R P1, 0x1001 R P2, 0x1002 R SYS, 0x1004 R DSW,
+//     0x100d R IN4 (bit 7 toggles on every read), 0x100a W dropped. Unmapped ports read 0.
+// Scroll registers (value in bits 31:16, written when either upper lane is):
+//   gstream 0x4f0/0x4f2 layer 2, 0x4f8/0x4fa layer 0, 0x4fc/0x4fe layer 1 (gstream_32bit_map 278)
+//   X2222   0x4ff/0x4fe layer 0, 0x4fd/0x4fc layer 1, 0x4fb/0x4fa layer 2 (x2222_32bit_map 372)
+// The backup RAM is at 0xffc00000 (8 KB). INT1 is the vertical-blank interrupt, held until the CPU takes it.
 
 module gs_main (
 	input             clk,
@@ -184,8 +178,8 @@ gs_cpumem #(.ROM_BASE(SD_BOOT), .WRAM_BASE(SD_WRAM), .DATA_BASE(SD_DATA), .XRAM_
 	.dbg_miss(), .dbg_miss_ic(), .dbg_miss_line()
 );
 
-// the backup RAM: the CPU on port A, or the blank sweep and the image load while it is in reset; port B reads it
-// back. The images hold the bytes in the CPU's order: byte k of a dword is bits 31-8k..24-8k.
+// Backup RAM: CPU on port A, or the blank sweep/image load while it is in reset; port B reads it back.
+// Images store byte k of a dword in bits 31-8k..24-8k (CPU byte order).
 wire [31:0] nvq;
 wire [3:0]  nv_be = 4'b1000 >> nv_load_addr[1:0];
 reg  [10:0] nv_sw;

@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: GPL-3.0-or-later
 -- Instructions the main CPU executes per frame, from the debugger's trace (MAME with -debug -nodrc).
 -- Drives the same inputs as busy.lua, then traces every instruction's PC for IC_FRAMES frames from
 -- IC_START, with a "# frame" line at each frame notifier. "noloop" turns off the debugger's loop

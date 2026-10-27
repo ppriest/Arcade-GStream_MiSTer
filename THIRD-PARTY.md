@@ -41,7 +41,9 @@ keep the change notices in its header.
 
 ### MiSTer-devel/Template_MiSTer — GPL-2.0-or-later (`sys/`)
 
-The framework, unmodified. Its grant is "or later", which is what lets it combine with GPL-3 code.
+The framework, unmodified, pinned at `9c8eadb` (2026-10-10). Its grant is "or later", which is what lets it
+combine with GPL-3 code. The two upstream commits after the pin (`afd7808`, `5dda373`, 2026-10-16) are not
+taken yet: the released `.rbf` was built against the pinned tree.
 
 ## Reference material, not code
 

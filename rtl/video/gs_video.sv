@@ -1,32 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// gstream's video (gstream.cpp screen_update 750-811), drawn per scanline: three 512 x 512 tilemaps of 32 x 32 8 bpp
-// tiles and up to 832 16 x 16 8 bpp sprites, the graphics read from DDR3 (docs/ROADMAP.md, Memory plan).
+// gstream video (gstream.cpp screen_update 750): three 512x512 tilemaps of 32x32 8bpp tiles and up to
+// 832 16x16 8bpp sprites, drawn per scanline; graphics come from DDR3.
 //
-// Memory seen by the CPU (gs_main), 32-bit words:
-//   VRAM 0x80000000-0x80003fff  4096 dwords: tilemap entries in bits 31:16 (layer n at dwords n*0x100..), the sprite
-//                               list in bits 15:0 (entry i at dwords 4i..4i+3: code, x, y, colour)
-//   palette 0x4f400000-0x4f406fff  two BGR565 entries a dword, the even one in bits 31:16
-// The renderer reads the VRAM live: the CPU rewrites it after the vertical blank interrupt and has finished by line 12
-// of the 22 blanking lines (docs/ROADMAP.md, Phase 0), so it never writes a line being drawn. The sprite fields are
-// also written into four shadow RAMs, one per field, so the scan reads an entry in one clock. The palette is read live.
-// The scroll registers are latched per line, for the line's drawing and its scan-out.
+// CPU memory, 32-bit words:
+//   VRAM 0x80000000-0x80003fff: tilemap entries in bits 31:16 (layer n at dword n*0x100), sprite list in
+//     bits 15:0 (entry i at dwords 4i..4i+3: code, x, y, colour)
+//   palette 0x4f400000-0x4f406fff: two BGR565 entries a dword, even in bits 31:16
+// VRAM is read live after the vblank interrupt; sprite fields are shadowed in four RAMs, one per field.
+// The palette is read live and scroll registers are latched per line.
 //
-// Raster: ce_pix 1 in 9 of 60.75 MHz (6.75 MHz), 432 x 262, visible 320 x 240 from (0, 0) (docs/HACKS.md: MAME gives no
-// raster). vblank_irq is one clock at the start of line 240.
-//
-// Line engine, during line v for line v + 1 (into line buffer (v + 1)[0]):
-//   tiles   for layers 0, 1, 2 and the 11 tile columns the screen crosses: the entry from the VRAM, a 32-byte row
-//           (4 DDR3 beats) at TILE_BASE + n * 4 MB + code * 1024 + row * 32, written 8 pixels a beat into the layer's
-//           buffer at its map column (the buffers hold map columns 0..511; scan-out reads (x + 2 + scrollx) & 511)
-//   sprites entries 0..831 (MAME's budget, 779-785) one a clock: row = (line - y) & 255 below 16 hits (the placements
-//           at y and y - 256 cannot both); a tile in the empty table is skipped (it draws nothing); a 16-byte row
-//           (2 beats) at SPR_BASE + code * 256 + row * 16, drawn a pixel a clock at (x - 2 + i) & 511, pen 0
-//           transparent, in list order so later entries cover earlier ones (MAME's draw order)
-// DDR3 requests go out back to back, up to MAXQ bursts in flight; the data comes back in order.
-// Scan-out mixes sprite, layer 0, 1, 2, else black (the fill, 772); colours: sprite col * 256 + pen, layer n
-// 0x1000 + 0x400 * n + pal * 256 + pen (gfx_gstream 555-560).
-// Flip (the OSD's: the board has no flip register) turns the picture 180 degrees: display line y is drawn from line
-// 239 - y and pixel x read from column 319 - x. It is latched at the start of the vertical blank.
+// Raster: ce_pix 1 in 9 (6.75 MHz), 432x262, visible 320x240 from (0,0) (docs/HACKS.md: MAME has no raster).
+// Line v draws line v+1: tiles for 3 layers and 11 columns, then 832 sprite entries; DDR3 reads are
+// queued up to MAXQ bursts. Scan-out mixes sprite, layer 0-2, else black.
+// Colours: sprite col*256+pen, layer n 0x1000+0x400*n+pal*256+pen (gfx_gstream 555).
+// Flip (OSD only; the board has none) turns the picture 180 degrees and is latched at vblank.
 
 module gs_video #(
 	parameter [27:0] SPR_BASE  = 28'h0500000,    // SD_SPR, a byte offset in the DDR3 image

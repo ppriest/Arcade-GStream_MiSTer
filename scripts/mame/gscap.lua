@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: GPL-3.0-or-later
 -- Video state and MAME's picture at chosen frames, for scripts/render_model.py.
 -- At each frame notifier N in GC_FRAMES writes the state to GC_OUT, and at notifier N + 1 the picture MAME drew from
 -- it: screen:pixels() at a notifier returns the picture drawn from the previous notifier's RAM (measured: frame 1500's

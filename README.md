@@ -214,7 +214,7 @@ Standard [Template_MiSTer](https://github.com/MiSTer-devel/Template_MiSTer) stru
 
 | path | contents |
 | - | - |
-| `sys` | MiSTer framework, vendored from the template, never edited |
+| `sys` | MiSTer framework, vendored from the template at `9c8eadb`, never edited |
 | `rtl` | core source; vendored modules carry a `PROVENANCE.md` |
 | `releases` | `.rbf` and `.mra` files |
 | `docs` | roadmap, workflow, release process, kludges, hacks, lessons |

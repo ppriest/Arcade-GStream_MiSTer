@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: GPL-3.0-or-later
 -- One region of the main CPU's program space, dumped at every frame notifier (MAME's screen update
 -- with this driver's zero-length vblank), for the sprite and tile census (scripts/vram_census.py).
 --

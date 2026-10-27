@@ -5,8 +5,8 @@
 // bridge and granule cache (rtl/sound/PROVENANCE.md), as Arcade-Eolith_MiSTer's eo_oki.sv; the two caches
 // share one SDRAM port, granule requests served in turn.
 //
-// The enable is exact: 1 MHz is 4/243 of 60.75 MHz, a pulse when an accumulator stepping by 4 wraps at 243. jt6295's sum is 14 bits with one voice at 12; each
-// chip is scaled by 16 (as eo_oki) and the two are added and clipped.
+// The enable is exact: 1 MHz is 4/243 of 60.75 MHz, a pulse when an accumulator stepping by 4 wraps at 243.
+// jt6295's sum is 14 bits with one voice at 12; each chip is scaled by 16 (as eo_oki), then added and clipped.
 //
 // Checks (GStream_stp's probe S, sim/sys_tb): dbg_late counts the ADPCM bytes jt6295 took before the bridge had them
 // (jt6295_rom latches the byte on the last clock of its st == 2 slot and does not wait; a replica of its timing,

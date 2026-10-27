@@ -1,14 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// GStream: MiSTer top level for MAME's promat/gstream.cpp (G-Stream G2020 and X2222).
 //
-// GStream (MAME promat/gstream.cpp): G-Stream G2020 and X2222; sets in scripts/build_mra.py SETS.
-//
-// Framework glue: hps_io, PLL, resets, the ROM load (fast, through DDR3), inputs, the backup RAM's default and .nvm,
-// the DDR3 port and the video output chain. The board is rtl/gs_main.sv (CPU, memory, I/O), rtl/video/gs_video.sv
-// and rtl/sound/gs_sound.sv.
-//
-// Clocks (rtl/pll): clk_sys 60.75 MHz for everything, SDRAM and DDR3 included (docs/ROADMAP.md, Clocks).
-// Memory (docs/ROADMAP.md, Memory plan): the image goes to DDR3 at 0x30000000; its first 5 MB (the CPU's ROMs and the
-// samples) are copied to SDRAM, the graphics are read from DDR3 during play.
+// Framework glue only: hps_io, PLL and resets, ROM load through DDR3, inputs, backup RAM and video output.
+// The board is rtl/gs_main.sv, rtl/video/gs_video.sv and rtl/sound/gs_sound.sv.
+// clk_sys is 60.75 MHz for the whole design. The image is loaded at DDR3 0x30000000; its first 5 MB
+// (CPU ROMs and samples) are copied to SDRAM, the graphics stay in DDR3 (docs/ROADMAP.md).
 
 module emu
 (
@@ -43,7 +39,7 @@ assign AUDIO_MIX = 2'd0;
 
 wire [1:0] ar = status[122:121];
 
-// Rotation: every set is ROT270 (gstream.cpp 1134-1136): Auto turns the picture counter-clockwise.
+// All sets are ROT270 (gstream.cpp 1134): Auto rotates counter-clockwise.
 wire [1:0] rot_sel    = status[64:63];
 wire       rotate_en  = rot_sel != 2'd1;
 wire       rotate_ccw = rot_sel == 2'd0 || rot_sel == 2'd3;
@@ -155,8 +151,8 @@ assign SDRAM_CLK = clk_sdram_shifted;
 
 wire reset = RESET | status[0] | buttons[1] | ~pll_locked;
 
-// The game is held until the ROM is in SDRAM and the empty-tile table is built; the memory path is not
-// (LESSONS_LEARNED, "Never hold the memory path in the core reset"). As Arcade-Vamphalf_MiSTer's Limenko.sv.
+// Hold the game, not the memory path, until the ROM copy and empty-tile scan finish
+// (Arcade-Vamphalf_MiSTer's Limenko.sv).
 wire ldr_active, et_busy;
 reg  rom_loaded = 1'b0, et_start = 1'b0, ldr_active_d = 1'b0;
 always @(posedge clk_sys) begin
@@ -169,11 +165,9 @@ wire dbg_hold;
 wire load_busy  = ldr_active | et_busy | et_start;
 wire core_reset = reset | ioctl_download | ~rom_loaded | load_busy | dbg_hold;
 
-// Fast ROM load: with address="0x30000000" on the .mra's index-0 ROM the HPS puts the image in DDR3 (no ioctl_wr);
-// the copy of its SDRAM part starts on the next reset release, once per index-0 download.
-// The video, and its DDR3 reads, are held with the game and from a reset until the copy has started: the copy's
-// ddram_phy takes any read data that arrives while it waits as its own (Limenko.sv). The copy starts after 256
-// clocks of that hold.
+// Fast ROM load: the HPS writes index 0 to DDR3 when the .mra sets address="0x30000000" (no ioctl_wr).
+// On the next reset release, copy the SDRAM part once. Video DDR3 reads are held until the copy starts,
+// because ddram_phy would take their data (Limenko.sv); the hold is 256 clocks.
 reg  dl0_d = 1'b0, dl0_seen = 1'b0, dl_seen_wr = 1'b0, ldr_pending = 1'b0, ldr_start = 1'b0, ldr_done = 1'b0;
 wire dl0 = ioctl_download && ioctl_index == 16'd0;
 wire vid_rst = ~pll_locked | core_reset | ldr_pending | ldr_start;
@@ -205,8 +199,8 @@ reg [7:0] mod_byte = 8'd0;
 always @(posedge clk_sys) if (ioctl_wr && ioctl_index == 16'd1 && ioctl_addr == 27'd0) mod_byte <= ioctl_dout;
 wire x2 = mod_byte[0];
 
-// <switches> (ioctl index 254): X2222's DSW, SYS bits 7:4 and 1, IN4 bits 6:0, as the CPU reads them (gstream has
-// no DIP in MAME). Before a .mra sends them, MAME's defaults.
+// <switches> (ioctl index 254): X2222's DSW, SYS bits 7:4 and 1, IN4 bits 6:0, as the CPU reads them.
+// gstream has no DIP in MAME. Defaults are MAME's until a .mra sends switches.
 reg [7:0] sw0 = 8'h0d, sw1 = 8'hff, sw2 = 8'hff;
 always @(posedge clk_sys)
 	if (ioctl_wr && ioctl_index == 16'd254) case (ioctl_addr[1:0])
@@ -253,9 +247,9 @@ wire pause_cpu = pause_toggle | status[82];
 
 ///////////////////////   BACKUP RAM   ///////////////////////////
 
-// gstream's backup RAM: zero at the start of each index-0 download (X2222's plain RAM stays so), then MAME's default
-// image (<rom index="2">, the CPU's byte order) and a saved .nvm (<nvram index="4">) load it. A save is requested a
-// second after the game's last write.
+// gstream's backup RAM: zeroed at the start of each index-0 download (X2222's plain RAM is kept), then
+// MAME's default image (<rom index="2">) and a saved .nvm (<nvram index="4">) load it. A save is requested
+// one second after the game's last write.
 reg [11:0] nv_blank_n = 12'd0;
 always @(posedge clk_sys)
 	if (dl0 && !dl0_d) nv_blank_n <= 12'd2100;
@@ -351,7 +345,6 @@ vh_rom_loader u_ldr (
 assign dl_req  = ldr_active ? ldl_req  : bdl_req;
 assign dl_addr = ldr_active ? ldl_addr : bdl_addr;
 
-// the empty-sprite-tile table, after the copy
 wire        et_rd, et_we;
 wire [28:0] et_ddr_addr;
 wire [7:0]  et_burst, et_data;
@@ -468,12 +461,11 @@ reg  [7:0] dbg_src_f1, dbg_src_f2;
 always @(posedge clk_sys) begin dbg_src_f1 <= dbg_src_f; dbg_src_f2 <= dbg_src_f1; end
 assign dbg_hold = dbg_src_f2[2];
 
-// Instance P: whether the CPU keeps up, frame by frame, as sim/sys_tb +idle counts it. A frame's busy clocks run from its
-// vblank interrupt to the CPU's last entry into the idle loop (0xc000158c-0xc0001594, init_gstream's speed-up PC); a
-// frame that ends with the CPU outside the loop is lost. The game skips its VRAM copy after a lost frame, so a frame
-// without a VRAM write is one the player sees repeated. Source bit 0 pulsed clears.
-// [15:0] frames, [31:16] lost, [47:32] frames without a VRAM write, [63:48] frames busy over 0.9,
-// [83:64] the busiest kept frame's busy clocks, [103:84] the last frame's (of 1,018,656 a frame)
+// Instance P: CPU headroom per frame, as sim/sys_tb +idle counts it. Busy clocks run from the vblank
+// interrupt to the CPU's last entry into its idle loop (0xc000158c-0xc0001594); a frame that ends
+// outside the loop is lost, and the game then skips its VRAM copy. Source bit 0 pulsed clears.
+// [15:0] frames, [31:16] lost, [47:32] frames without a VRAM write, [63:48] frames over 0.9,
+// [83:64] busiest kept frame's clocks, [103:84] last frame's (of 1,018,656 a frame)
 wire [7:0] dbg_src_p;
 reg  [2:0] p_clr_s = 3'd0;
 always @(posedge clk_sys) p_clr_s <= {p_clr_s[1:0], dbg_src_p[0]};
@@ -512,10 +504,10 @@ issp_probe #(.INSTANCE_ID("P"), .PROBE_W(128), .SOURCE_W(8)) u_issp_p (
 	.source(dbg_src_p)
 );
 
-// Instance S: the sound (rtl/sound/gs_sound.sv). [15:0] / [31:16] ADPCM bytes chip 1 / 2 took before they had come,
-// [43:32] / [55:44] the longest wait for rom_ok (clocks; jt6295 takes the byte 243-486 clocks after the address),
-// [87:56] chk_sum, [88] chk_busy. Source: bit 0 pulsed clears the counters, bit 1 pulsed reads segment [4:2]
-// (0-3 OKI1, 4-7 OKI2, 256 KB each) back from SDRAM into chk_sum; scripts/oki_sum.py gives the image's.
+// Instance S: sound (rtl/sound/gs_sound.sv). [15:0]/[31:16] ADPCM bytes chip 1/2 took before the bridge
+// had them, [43:32]/[55:44] longest rom_ok wait (jt6295 takes the byte 243-486 clocks after the address),
+// [87:56] chk_sum, [88] chk_busy. Source: bit 0 clears, bit 1 reads segment [4:2] (0-3 OKI1, 4-7 OKI2,
+// 256 KB each) from SDRAM into chk_sum; scripts/oki_sum.py has the image's.
 wire [7:0] dbg_src_s;
 reg  [7:0] dbg_src_s1 = 8'd0, dbg_src_s2 = 8'd0, dbg_src_s3 = 8'd0;
 always @(posedge clk_sys) begin dbg_src_s1 <= dbg_src_s; dbg_src_s2 <= dbg_src_s1; dbg_src_s3 <= dbg_src_s2; end
@@ -572,7 +564,7 @@ arcade_video #(.WIDTH(320), .DW(24), .GAMMA(1)) arcade_video
 	.gamma_bus(gamma_bus)
 );
 
-// display aspect 4:3 (3:4 turned), the monitors' (CLAUDE.md)
+// 4:3 display (3:4 when rotated), independent of pixel aspect.
 video_freak video_freak
 (
 	.CLK_VIDEO(CLK_VIDEO),
@@ -594,8 +586,8 @@ video_freak video_freak
 
 ///////////////////////   DDR3   /////////////////////////////////
 
-// The load-time client (the copy, then the empty-tile scan) owns the port while the game is held; in play the
-// video's reads and the rotator's writes share it (rtl/memory/gs_ddr_arb.sv). The rotator's buffer is at
+// The load-time client (copy, then empty-tile scan) owns the port while the game is held; in play the
+// video reads and rotator writes share it (rtl/memory/gs_ddr_arb.sv). The rotator buffer is at
 // 0x24000000, clear of the image at 0x30000000.
 wire        rot_DDRAM_CLK, rot_DDRAM_WE, rot_DDRAM_RD, rot_busy;
 wire [7:0]  rot_DDRAM_BURSTCNT, rot_DDRAM_BE;
